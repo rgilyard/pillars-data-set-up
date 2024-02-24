@@ -95,7 +95,7 @@ by MMDetection3D's pointpillar model training.
 
 ADD FILD DESCRIPTIONS WHEN FINISHED.
 
-### matlab_scrips ###
+### matlab_scripts ###
 
 - **convertToKITTI.m** <br>
     A MatLab script to convert .mat labels into .txt KITTI format labels
@@ -117,12 +117,14 @@ manually before running the script)
 
 ## Which tools use which files?? ##
 
-.pcap   Veloview, MatLab <br>
-.mat    MatLab (Python script runs the MatLab script) <br>
-.las    Python script <br>
-.bin    MMDetection3D
-.txt    MMDetection3D
-.png    MMDetection3D
+| File Extention | Program                                            |
+|----------------|----------------------------------------------------|
+| .pcap          | Veloview, MatLab <br>                              |
+| .mat           | MatLab (Python script runs the MatLab script) <br> |
+| .las           | Python script <br>                                 |
+| .bin           | MMDetection3D                                      |
+| .txt           | MMDetection3D                                      |
+| .png           | MMDetection3D                                      |
 
 ## Velodyne Information ##
 Velodyn 32c.
