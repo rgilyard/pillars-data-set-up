@@ -20,6 +20,16 @@ function convertToKitti(file)
     % Load data and get ground truth
     Data = load(file);
     gTruthData = Data.gTruth;
+
+    currentPathDataSource = 'C:\Users\gilya\Desktop\School\COMP 696C Grad Research\Data\zelzah plummer 1 2023-03-20-11-47-56_Velodyne-VLP-32C-Data.pcap';
+%    currentPathDataSource = gTruthData.DataSource;
+    newPath = {'C:/Users/gilya/Desktop/data_set_up/raw_arcs_data/zelzah plummer 1 2023-03-20-11-47-56_Velodyne-VLP-32C-Data.pcap'};
+    newPathDataSource = fullfile(matlabroot, newPath);
+    alternativePaths = {[newPathDataSource]};
+%    unresolvedPaths = changeFilePaths(gTruthData, alternativePaths)
+
+    gTruthData = changeFilePaths(gTruthData, alternativePaths);
+%    save('groundTruthLidarTest.mat', 'gTruthData');
     % Get LabelData table
     labelData = gTruthData.LabelData;
 

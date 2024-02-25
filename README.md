@@ -16,7 +16,8 @@ Prepare .pcap files and .mat labels for use with the PointPillars model in MMDet
 
 - Download the raw .pcap files from Google Drive to raw_arcs_data folder
 - Import the .pcap files into MatLab to label them.
-- Save the MatLab .mat labels to raw_arcs_data folder
+- Save the MatLab .mat labels to raw_arcs_data folder. The .pcap files must remain in the same
+  folder for the matlab .m script to run properly later.
 - Open .pcap files in Veloview and export as .las files to preprocessed_arcs_data/las folder.
 - USAGE FOR PYTHON SCRIPT THAT SHOULD
   - Run the .m script to convert .mat labels to .txt files and save them to the 
