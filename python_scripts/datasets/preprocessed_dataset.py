@@ -7,4 +7,5 @@ class PreprocessedDataset(Dataset):
 
     def __init__(self):
         super().__init__(type(self).raw_data_file_path, type(self).processed_data_file_path)
+        print('initializing PreprocessedData object')
 
