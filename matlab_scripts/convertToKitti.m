@@ -9,7 +9,7 @@ function convertToKitti(file)
     fprintf('\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n');
 
     % Create output file if it doesn't exist
-    outputDir = '../preprocessed_arcs_data/labels';
+    outputDir = 'C:/Users/gilya/Desktop/data_set_up/preprocessed_arcs_data/labels';
 
     % Check if the directory exists
     if ~exist(outputDir, 'dir')
@@ -19,19 +19,23 @@ function convertToKitti(file)
 
     % Load data and get ground truth
     Data = load(file);
-    gTruthData = Data.gTruth;
+    gTruth = Data.gTruth;
 
+    % Specify the correct current and new paths
     currentPathDataSource = 'C:\Users\gilya\Desktop\School\COMP 696C Grad Research\Data\zelzah plummer 1 2023-03-20-11-47-56_Velodyne-VLP-32C-Data.pcap';
-%    currentPathDataSource = gTruthData.DataSource;
-    newPath = {'C:/Users/gilya/Desktop/data_set_up/raw_arcs_data/zelzah plummer 1 2023-03-20-11-47-56_Velodyne-VLP-32C-Data.pcap'};
-    newPathDataSource = fullfile(matlabroot, newPath);
-    alternativePaths = {[newPathDataSource]};
-%    unresolvedPaths = changeFilePaths(gTruthData, alternativePaths)
+    newPathDataSource = 'C:/Users/gilya/Desktop/data_set_up/raw_arcs_data/zelzah plummer 1 2023-03-20-11-47-56_Velodyne-VLP-32C-Data.pcap';
+    alternativePaths = {{currentPathDataSource, newPathDataSource}};
 
-    gTruthData = changeFilePaths(gTruthData, alternativePaths);
-%    save('groundTruthLidarTest.mat', 'gTruthData');
-    % Get LabelData table
-    labelData = gTruthData.LabelData;
+    % Attempt to change file paths
+    unresolvedPaths = changeFilePaths(gTruth, alternativePaths);
+
+    if ~isempty(unresolvedPaths)
+        fprintf('There are unresolved paths:\n');
+        disp(unresolvedPaths);
+    else
+        fprintf('All paths resolved successfully.\n');
+    end
+    labelData = gTruth.LabelData;
 
     % For "each" row in the timetable (example: first 10 rows)
     for rowIndex = 1:100
@@ -40,8 +44,11 @@ function convertToKitti(file)
         carStructArray = carCell{1};
 
         % Open a file to write the KITTI format data for each timestamp
-        filename = sprintf('labels/%06d.txt', rowIndex - 1);
+        filename = fullfile(outputDir, sprintf('%06d.txt', rowIndex - 1));
         fileID = fopen(filename, 'w');
+        if fileID == -1
+            error('Failed to open file: %s', filename);
+        end
 
         for carIndex = 1:numel(carStructArray)
             % Access the struct representing the car
