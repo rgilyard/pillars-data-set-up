@@ -3,4 +3,5 @@ arcs/
 matlab_scripts/
 preprocessed_arcs_data/
 raw_arcs_data/
+test_reset.py
 !matlab_scripts/convertToKitti.m

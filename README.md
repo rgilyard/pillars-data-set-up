@@ -1,39 +1,64 @@
 # pillars-data-set-up #
 
-Scripts to transform LiDAR data into the format usable by MMDetection3D models.
-
-## Purpose ##
-
 Prepare .pcap files and .mat labels for use with the PointPillars model in MMDetection3D.
 
+## Dependencies ##
+
+Python 3.?
+Also, just get the install list.
+
 ## Usage ##
-(Reference preparation instructions, then show how to run python file)
+
+Please see [Preparation](#preparation) for the manual tasks that need to be done before running.
+
+To start, please run:
+```commandline
+python python_scripts/set_up.py
+```
 
 ## Preparation ##
-(Similar to conversions, change conversion to show flow chart)
 
-## Conversions ##
-
+Before running the scripts, please:
 - Download the raw .pcap files from Google Drive to raw_arcs_data folder
 - Import the .pcap files into MatLab to label them.
 - Save the MatLab .mat labels to raw_arcs_data folder. The .pcap files must remain in the same
   folder for the matlab .m script to run properly later.
 - Open .pcap files in Veloview and export as .las files to preprocessed_arcs_data/las folder.
-- USAGE FOR PYTHON SCRIPT THAT SHOULD
-  - Run the .m script to convert .mat labels to .txt files and save them to the 
-    preprocessed_arcs_data/labels folder.
-  - For each .txt label file, divide into train, validate and test set.
-    - Save information in arcs/ImageSets/.
-  - Copy the appropriate .txt files to the training/label and testing/label folders
-  - For each .txt label in the training/label and testing/label folders, convert the 
-    corresponding .las file to suitable KITTI .bin file. GET FROM BIN CONVERTER FROM SERVER.
-  - Temporarily add blank images for the images (add still from video if time permits. Not
-    necessary for training).
-  - Add calibration files. These are each the same in the KITTI dataset. I believe it has to
-    do with the area in the LiDAR frames we want to use. I will try copying the KITTI versions,
-    then adjusting them.
+
+Files must be in this structure in order for the scripts to run:
+```
+.
+├── matlab_scripts/
+│   └── convertToKitti.m
+├── preprocessed_data/
+│   └── las/
+├── raw_arcs_data/
+│   ├── groundTruthLidar.mat
+│   └── zelzah.pcap
+└── python_scripts/
+    ├── set_up.py
+    └── datasets/
+```
+
+## Conversions ##
+
+Add flowchart for conversions
+
+- Run the .m script to convert .mat labels to .txt files and save them to the 
+  preprocessed_arcs_data/labels folder.
+- For each .txt label file, divide into train, validate and test set.
+  - Save information in arcs/ImageSets/.
+- Copy the appropriate .txt files to the training/label and testing/label folders
+- For each .txt label in the training/label and testing/label folders, convert the 
+  corresponding .las file to suitable KITTI .bin file. GET FROM BIN CONVERTER FROM SERVER.
+- Temporarily add blank images for the images (add still from video if time permits. Not
+  necessary for training).
+- Add calibration files. These are each the same in the KITTI dataset. I believe it has to
+  do with the area in the LiDAR frames we want to use. I will try copying the KITTI versions,
+  then adjusting them.
 
 ## File Structure ##
+
 ```
 .
 ├── arcs/
@@ -57,9 +82,9 @@ Prepare .pcap files and .mat labels for use with the PointPillars model in MMDet
 │   ├── groundTruthLidar.mat
 │   └── zelzah.pcap
 └── python_scripts/
-    └── main.py
+    ├── set_up.py
+    └── datasets/*
 ```
-
 
 ### arcs ###
 
