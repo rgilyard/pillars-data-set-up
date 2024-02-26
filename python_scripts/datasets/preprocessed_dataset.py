@@ -1,5 +1,5 @@
 from .dataset import Dataset
-import shutil
+from .utils import copy_files, save_list_to_file, convert_las_to_bin, get_frame_number
 import os
 import random
 
@@ -10,8 +10,8 @@ class PreprocessedDataset(Dataset):
         super().__init__()
         print('initializing PreprocessedData object')
         # Strings for file tree creation
-        self.LAS_FILE_PATH = '../preprocessed_arcs_data/las'
-        self.SOURCE_LABELS_FILE_PATH = '../preprocessed_arcs_data/labels'
+        self.LAS_FILE_PATH = 'preprocessed_arcs_data\\las'
+        self.SOURCE_LABELS_FILE_PATH = 'preprocessed_arcs_data\\labels'
         self.ARCS_ROOT_DIR = 'arcs'
         self.IMAGE_SETS_DIR = 'ImageSets'
         self.TESTING_DIR = 'testing'
@@ -25,16 +25,59 @@ class PreprocessedDataset(Dataset):
         self.labels_list = self.get_labels()
         print(self.labels_list)
 
-        # WHAT TO DO
-        # For each file in imageSet (well, train and test) copy the txt files from prep/labels to arcs/.../labels
-
     def process(self):
         print('Attempting to save train, val, test lists')
-        self.save_train_val_test_splits()
+        # self.save_train_val_test_splits()
         print('Done saving lists')
         print('Attempting to copy files to arcs')
-        self.copy_files_to_arcs()
+        # self.copy_files_to_arcs()
         print('Done copying files to arcs')
+        print('Attempting to convert las files to bin')
+        self.convert_all_las_to_bin()
+
+    def convert_all_las_to_bin(self):
+        # Make a set for files in test file
+        test_set = set()
+        test_set_path = os.path.join(self.ARCS_ROOT_DIR, self.IMAGE_SETS_DIR, 'test.txt')
+        with open(test_set_path, 'r') as file:
+            test_set = {os.path.splitext(line.strip())[0] for line in file}
+        print(test_set)
+
+        # Make a set for files in trainval file
+        trainval_set = set()
+        trainval_set_path = os.path.join(self.ARCS_ROOT_DIR, self.IMAGE_SETS_DIR, 'trainval.txt')
+        with open(trainval_set_path, 'r') as file:
+            test_set = {os.path.splitext(line.strip())[0] for line in file}
+        print(trainval_set)
+
+        # List all files in the directory that end with .las
+        las_files = [file for file in os.listdir(self.LAS_FILE_PATH) if file.endswith('.las')]
+        # Make a dictionary with fixed width index as the key, and full path as the value
+        in_out_dict = {}
+        # For each item in the las files
+        for las in las_files:
+            # Get index, make fixed width so we can compare it to sets
+            padded_frame_number = get_frame_number(las)
+
+            # If it's in test set
+            if padded_frame_number in test_set:
+                # Create a to and from entry
+                from_path_string = os.path.join(self.LAS_FILE_PATH, las)
+                to_path_string = os.path.join(self.ARCS_ROOT_DIR, self.TESTING_DIR, self.VELODYNE_DIR,
+                                              f'{padded_frame_number}.bin')
+                # Add to the dictionary
+                in_out_dict[from_path_string] = to_path_string
+            # Elif it's in the trainval set
+            elif padded_frame_number in trainval_set:
+                # Create a to and from entry
+                pass
+                # Add to the dictionary
+
+        # Try with just 10 files at first
+        # for each file in the directory
+        for las in in_out_dict.keys():
+            print('converting: ' + str(las) + ' ' + str(in_out_dict[las]))
+            convert_las_to_bin(las, in_out_dict[las])
 
     # Copies label files from preprocessed to arcs using the splits saved in ImageSets
     def copy_files_to_arcs(self):
@@ -49,22 +92,7 @@ class PreprocessedDataset(Dataset):
         os.makedirs(dest_dir, exist_ok=True)
 
         # Copy files
-        self.copy_files(file_path, self.SOURCE_LABELS_FILE_PATH, dest_dir)
-
-    def copy_files(self, list_file_path, src_dir, dest_dir):
-        # Ensure the destination directory exists
-        os.makedirs(dest_dir, exist_ok=True)
-
-        # Open the file containing the list of files to copy
-        with open(list_file_path, 'r') as file_list:
-            for file_name in file_list:
-                file_name = file_name.strip()  # Remove any leading/trailing whitespace
-                src_file_path = os.path.join(src_dir, file_name)
-                dest_file_path = os.path.join(dest_dir, file_name)
-
-                # Copy the file from the source to the destination
-                shutil.copy2(src_file_path, dest_file_path)
-                # print(f"Copied {src_file_path} to {dest_file_path}")
+        copy_files(file_path, self.SOURCE_LABELS_FILE_PATH, dest_dir)
 
     # Make a train, val, test split, save lists to arcs/ImageSets
     def save_train_val_test_splits(self):
@@ -93,16 +121,10 @@ class PreprocessedDataset(Dataset):
         os.makedirs(root, exist_ok=True)
 
         # Save to files
-        self.save_list_to_file(train_files, os.path.join(root, 'train.txt'))
-        self.save_list_to_file(val_files, os.path.join(root, 'val.txt'))
-        self.save_list_to_file(test_files, os.path.join(root, 'test.txt'))
-        self.save_list_to_file(trainval_files, os.path.join(root, 'trainval.txt'))
-
-    # Function to save lists to files
-    def save_list_to_file(self, list_of_files, file_name):
-        with open(file_name, 'w') as f:
-            for item in list_of_files:
-                f.write("%s\n" % item)
+        save_list_to_file(train_files, os.path.join(root, 'train.txt'))
+        save_list_to_file(val_files, os.path.join(root, 'val.txt'))
+        save_list_to_file(test_files, os.path.join(root, 'test.txt'))
+        save_list_to_file(trainval_files, os.path.join(root, 'trainval.txt'))
 
     # First get a list of file names from labels
     def get_labels(self):
@@ -111,8 +133,3 @@ class PreprocessedDataset(Dataset):
                      os.path.isfile(os.path.join(self.SOURCE_LABELS_FILE_PATH, file))]
         return file_list
 
-    # Pass in a list of strings to make a directory if it doesn't exist
-    def create_dir_if_not_exist(self, list_of_strings):
-        # Make a path from the strings
-        # Create the directory if it doesn't exist
-        pass
