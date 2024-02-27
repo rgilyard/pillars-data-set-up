@@ -29,9 +29,10 @@ def convert_las_to_bin(infile, outfile):
         # Save the features to a binary file
         features.astype(np.float32).tofile(outfile)
 
-        timestamp = las.gps_time
-        print(timestamp)
-        return timestamp
+        # This is for the video if I end up doing that later
+        # timestamp = las.gps_time
+        # print(timestamp)
+        # return timestamp
 
 
 def get_frame_number(las_file_string):

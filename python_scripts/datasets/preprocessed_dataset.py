@@ -26,28 +26,22 @@ class PreprocessedDataset(Dataset):
         print(self.labels_list)
 
     def process(self):
-        print('Attempting to save train, val, test lists')
-        # self.save_train_val_test_splits()
+        self.save_train_val_test_splits()
         print('Done saving lists')
-        print('Attempting to copy files to arcs')
-        # self.copy_files_to_arcs()
-        print('Done copying files to arcs')
-        print('Attempting to convert las files to bin')
+        self.copy_files_to_arcs()
         self.convert_all_las_to_bin()
 
     def convert_all_las_to_bin(self):
         # Make a set for files in test file
-        test_set = set()
         test_set_path = os.path.join(self.ARCS_ROOT_DIR, self.IMAGE_SETS_DIR, 'test.txt')
         with open(test_set_path, 'r') as file:
             test_set = {os.path.splitext(line.strip())[0] for line in file}
         print(test_set)
 
         # Make a set for files in trainval file
-        trainval_set = set()
         trainval_set_path = os.path.join(self.ARCS_ROOT_DIR, self.IMAGE_SETS_DIR, 'trainval.txt')
         with open(trainval_set_path, 'r') as file:
-            test_set = {os.path.splitext(line.strip())[0] for line in file}
+            trainval_set = {os.path.splitext(line.strip())[0] for line in file}
         print(trainval_set)
 
         # List all files in the directory that end with .las
@@ -59,10 +53,10 @@ class PreprocessedDataset(Dataset):
             # Get index, make fixed width so we can compare it to sets
             padded_frame_number = get_frame_number(las)
 
+            from_path_string = os.path.join(self.LAS_FILE_PATH, las)
             # If it's in test set
             if padded_frame_number in test_set:
                 # Create a to and from entry
-                from_path_string = os.path.join(self.LAS_FILE_PATH, las)
                 to_path_string = os.path.join(self.ARCS_ROOT_DIR, self.TESTING_DIR, self.VELODYNE_DIR,
                                               f'{padded_frame_number}.bin')
                 # Add to the dictionary
@@ -70,8 +64,10 @@ class PreprocessedDataset(Dataset):
             # Elif it's in the trainval set
             elif padded_frame_number in trainval_set:
                 # Create a to and from entry
-                pass
+                to_path_string = os.path.join(self.ARCS_ROOT_DIR, self.TRAINING_DIR, self.VELODYNE_DIR,
+                                              f'{padded_frame_number}.bin')
                 # Add to the dictionary
+                in_out_dict[from_path_string] = to_path_string
 
         # Try with just 10 files at first
         # for each file in the directory
