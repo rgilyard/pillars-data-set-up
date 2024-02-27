@@ -47,6 +47,7 @@ def get_frame_number(las_file_string):
         print("No frame number found in the file name.")
         return ''
 
+
 def copy_files(list_file_path, src_dir, dest_dir):
     # Ensure the destination directory exists
     os.makedirs(dest_dir, exist_ok=True)
@@ -64,7 +65,7 @@ def copy_files(list_file_path, src_dir, dest_dir):
 
 
 # Function to save lists to files
-def save_list_to_file(self, list_of_files, file_name):
+def save_list_to_file(list_of_files, file_name):
     with open(file_name, 'w') as f:
         for item in list_of_files:
             f.write("%s\n" % item)

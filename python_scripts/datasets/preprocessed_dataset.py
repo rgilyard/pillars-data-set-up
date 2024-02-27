@@ -1,13 +1,13 @@
-from .dataset import Dataset
 from .utils import copy_files, save_list_to_file, convert_las_to_bin, get_frame_number
 import os
 import random
+import shutil
 
 
-class PreprocessedDataset(Dataset):
+# Probably have classes for las data, labels, video, and calibration
+class PreprocessedDataset:
 
     def __init__(self):
-        super().__init__()
         print('initializing PreprocessedData object')
         # Strings for file tree creation
         self.LAS_FILE_PATH = 'preprocessed_arcs_data\\las'
@@ -20,17 +20,21 @@ class PreprocessedDataset(Dataset):
         self.IMAGE_DIR = 'image_2'
         self.LABEL_DIR = 'label_2'
         self.VELODYNE_DIR = 'velodyne'
+        self.PLACEHOLDER_IMAGE_PATH = 'python_scripts/assets/placeholder.png'
 
         # List of file names from labels
         self.labels_list = self.get_labels()
         print(self.labels_list)
 
+        # MAKE SURE DIRECTORIES EXIST
+
     def process(self):
         self.save_train_val_test_splits()
-        print('Done saving lists')
         self.copy_files_to_arcs()
         self.convert_all_las_to_bin()
 
+    # Converts the .las files to .bin format and saves them to the appropriate testing and training folders.
+    # Also adds a placeholder image for each label/lidar frame. Later I may get images from video.
     def convert_all_las_to_bin(self):
         # Make a set for files in test file
         test_set_path = os.path.join(self.ARCS_ROOT_DIR, self.IMAGE_SETS_DIR, 'test.txt')
@@ -61,6 +65,10 @@ class PreprocessedDataset(Dataset):
                                               f'{padded_frame_number}.bin')
                 # Add to the dictionary
                 in_out_dict[from_path_string] = to_path_string
+                # Also save a placeholder still frame file (This is hack, but I want to change it later)
+                shutil.copy2(self.PLACEHOLDER_IMAGE_PATH, os.path.join(self.ARCS_ROOT_DIR, self.TESTING_DIR,
+                                                                       self.IMAGE_DIR, f'{padded_frame_number}.png'))
+
             # Elif it's in the trainval set
             elif padded_frame_number in trainval_set:
                 # Create a to and from entry
@@ -68,11 +76,14 @@ class PreprocessedDataset(Dataset):
                                               f'{padded_frame_number}.bin')
                 # Add to the dictionary
                 in_out_dict[from_path_string] = to_path_string
+                # Also save a placeholder still frame file (This is hack, but I want to change it later)
+                shutil.copy2(self.PLACEHOLDER_IMAGE_PATH, os.path.join(self.ARCS_ROOT_DIR, self.TRAINING_DIR,
+                                                                       self.IMAGE_DIR, f'{padded_frame_number}.png'))
 
         # Try with just 10 files at first
         # for each file in the directory
         for las in in_out_dict.keys():
-            print('converting: ' + str(las) + ' ' + str(in_out_dict[las]))
+            # print('converting: ' + str(las) + ' ' + str(in_out_dict[las]))
             convert_las_to_bin(las, in_out_dict[las])
 
     # Copies label files from preprocessed to arcs using the splits saved in ImageSets

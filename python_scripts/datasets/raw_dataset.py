@@ -1,14 +1,12 @@
-from .dataset import Dataset
 import subprocess
 
 
-class RawDataset(Dataset):
+class RawDataset:
     raw_data_file_path = 'C:/Users/gilya/Desktop/data_set_up/raw_arcs_data/groundTruthLidarTest.mat'
     kitt_full_path = 'C:/Users/gilya/Desktop/data_set_up/matlab_scripts/convertToKitti.m'
     processed_data_file_path = '../preprocessed_arcs_data/'
 
     def __init__(self):
-        super().__init__()
         print('Initializing RawDataset object')
 
     def process(self):

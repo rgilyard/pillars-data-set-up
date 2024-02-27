@@ -2,12 +2,8 @@ from datasets import *
 
 
 def prepare_data():
-    print('attempting to process raw dataset')
-    # raw_set = RawDataset().process()
-    print('processed raw dataset')
-    print('attempting to process preprocessed dataset')
+    raw_set = RawDataset().process()
     prep_set = PreprocessedDataset().process()
-    print('processed preprocessed dataset')
     # Will I even need to do anything with ARCS?
 
 
