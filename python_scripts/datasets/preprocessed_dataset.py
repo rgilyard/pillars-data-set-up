@@ -21,6 +21,7 @@ class PreprocessedDataset:
         self.LABEL_DIR = 'label_2'
         self.VELODYNE_DIR = 'velodyne'
         self.PLACEHOLDER_IMAGE_PATH = 'python_scripts/assets/placeholder.png'
+        self.PLACEHOLDER_CALIB_PATH = 'python_scripts/assets/placeholder_calib.txt'
 
         # List of file names from labels
         self.labels_list = self.get_labels()
@@ -68,6 +69,9 @@ class PreprocessedDataset:
                 # Also save a placeholder still frame file (This is hack, but I want to change it later)
                 shutil.copy2(self.PLACEHOLDER_IMAGE_PATH, os.path.join(self.ARCS_ROOT_DIR, self.TESTING_DIR,
                                                                        self.IMAGE_DIR, f'{padded_frame_number}.png'))
+                # Also save a placeholder calibration file
+                shutil.copy2(self.PLACEHOLDER_CALIB_PATH, os.path.join(self.ARCS_ROOT_DIR, self.TESTING_DIR,
+                                                                       self.CALIB_DIR, f'{padded_frame_number}.txt'))
 
             # Elif it's in the trainval set
             elif padded_frame_number in trainval_set:
@@ -79,6 +83,9 @@ class PreprocessedDataset:
                 # Also save a placeholder still frame file (This is hack, but I want to change it later)
                 shutil.copy2(self.PLACEHOLDER_IMAGE_PATH, os.path.join(self.ARCS_ROOT_DIR, self.TRAINING_DIR,
                                                                        self.IMAGE_DIR, f'{padded_frame_number}.png'))
+                # Also save a placeholder calibration file
+                shutil.copy2(self.PLACEHOLDER_CALIB_PATH, os.path.join(self.ARCS_ROOT_DIR, self.TRAINING_DIR,
+                                                                       self.CALIB_DIR, f'{padded_frame_number}.txt'))
 
         # Try with just 10 files at first
         # for each file in the directory

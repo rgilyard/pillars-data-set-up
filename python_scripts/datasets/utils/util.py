@@ -41,7 +41,7 @@ def get_frame_number(las_file_string):
         frame_number = match.group(1)  # Extract the frame number
         # Pad the frame number to a fixed length of 6 with leading zeros
         padded_frame_number = frame_number.zfill(6)
-        print(f"Original frame number: {frame_number}, Padded frame number: {padded_frame_number}")
+        # print(f"Original frame number: {frame_number}, Padded frame number: {padded_frame_number}")
         return padded_frame_number
     else:
         print("No frame number found in the file name.")
