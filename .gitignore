@@ -6,3 +6,4 @@ raw_arcs_data/
 test_reset.py
 arcs.zip
 !matlab_scripts/convertToKitti.m
+commands.txt

@@ -141,6 +141,13 @@ Contains the .txt labels after the python script is run.
 Contains the .las LiDAR files manually exported from veloview (this needs to be done 
 manually before running the script)
 
+## Transfer ##
+The script also zips the arcs files into 'arcs.zip' which can be transferred to the server like so:
+- ssh into the server using OpenVPN connect
+- open command prompt
+- use scp to move zip file:
+  - scp /path/to/local/file.zip username@server.ip.address.x:path/to/server/distination.zip
+
 ## Which tools use which files?? ##
 
 | File Extention | Program                                            |
@@ -154,5 +161,7 @@ manually before running the script)
 
 ## Velodyne Information ##
 Velodyn 32c.
+
+
 
 
